@@ -1,9 +1,15 @@
+using API;
+using Application;
+using Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
+
+builder.Services
+    .AddApi()
+    .AddApplication()
+    .AddInfrasturcture(builder.Configuration);
 
 if (app.Environment.IsDevelopment())
 {
@@ -12,5 +18,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
 
 app.Run();
