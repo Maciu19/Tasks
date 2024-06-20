@@ -1,21 +1,21 @@
 using FluentMigrator;
 
+using Infrastructure.Common;
+
 namespace Infrastructure.Migrations;
 
 [Migration(1)]
 public class CreateUserTable : Migration
 {
-    private const string TableName = "user";
-
     public override void Up()
     {
-        if (Schema.Schema("public").Table(TableName).Exists())
+        if (Schema.Schema(DatabaseConstants.Schema).Table(DatabaseConstants.UserTableName).Exists())
         {
             return;
         }
 
-        Create.Table(TableName)
-            .InSchema("public")
+        Create.Table(DatabaseConstants.UserTableName)
+            .InSchema(DatabaseConstants.Schema)
             .WithColumn("id").AsGuid().PrimaryKey()
             .WithColumn("email").AsString().Unique()
             .WithColumn("password").AsString()
@@ -24,9 +24,9 @@ public class CreateUserTable : Migration
 
     public override void Down()
     {
-        if (Schema.Schema("public").Table(TableName).Exists())
+        if (Schema.Schema(DatabaseConstants.Schema).Table(DatabaseConstants.UserTableName).Exists())
         {
-            Delete.Table(TableName);
+            Delete.Table(DatabaseConstants.UserTableName);
         }
     }
 }
