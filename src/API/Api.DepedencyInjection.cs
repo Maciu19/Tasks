@@ -10,6 +10,8 @@ public static class DepedencyInjection
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         
+        services.AddExceptionHandler<CustomExceptionHandler>();
+        services.AddExceptionHandler<ValidationExceptionHandler>();
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
 

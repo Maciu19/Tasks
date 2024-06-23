@@ -17,9 +17,29 @@ public class CreateUserTable : Migration
         Create.Table(DatabaseConstants.UserTableName)
             .InSchema(DatabaseConstants.Schema)
             .WithColumn("id").AsGuid().PrimaryKey()
-            .WithColumn("email").AsString().Unique()
+            .WithColumn("username").AsString()
+            .WithColumn("email").AsString()
             .WithColumn("password").AsString()
-            .WithColumn("display_name").AsString().Unique();
+            .WithColumn("display_name").AsString()
+            .WithColumn("deleted").AsBoolean();
+
+        Execute.Sql($@"
+            CREATE UNIQUE INDEX {DatabaseConstants.UserTableName}_unique_username
+            ON {DatabaseConstants.Schema}.{DatabaseConstants.UserTableName} (username)
+            WHERE deleted = false;
+        ");
+
+        Execute.Sql($@"
+            CREATE UNIQUE INDEX {DatabaseConstants.UserTableName}_unique_email
+            ON {DatabaseConstants.Schema}.{DatabaseConstants.UserTableName} (email)
+            WHERE deleted = false;
+        ");
+
+        Execute.Sql($@"
+            CREATE UNIQUE INDEX {DatabaseConstants.UserTableName}_unique_display_name
+            ON {DatabaseConstants.Schema}.{DatabaseConstants.UserTableName} (display_name)
+            WHERE deleted = false;
+        ");
     }
 
     public override void Down()

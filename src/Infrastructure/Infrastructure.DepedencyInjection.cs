@@ -3,6 +3,7 @@ using FluentMigrator.Runner;
 using Infrastructure.Common.DatabaseProvider;
 
 using Infrastructure.Migrations;
+using Infrastructure.Repositories;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,8 @@ public static class DepedencyInjection
     {
         services
             .AddSingleton<IDatabaseProvider, DatabaseProvider>()
-            .AddMigration();
+            .AddMigration()
+            .AddRepositories();
 
         return services;
     }
@@ -33,6 +35,13 @@ public static class DepedencyInjection
                 .ScanIn(typeof(CreateUserTable).Assembly).For.Migrations())
             .AddLogging(lb => lb.AddFluentMigratorConsole())
             .BuildServiceProvider(false);
+
+        return services;
+    }
+
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

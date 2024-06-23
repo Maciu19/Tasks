@@ -3,10 +3,11 @@ using Application;
 
 using FluentMigrator.Runner;
 
-
 using Infrastructure;
 
 using Serilog;
+
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
