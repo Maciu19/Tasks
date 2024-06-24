@@ -71,6 +71,14 @@ namespace API.Controllers
                 value: UserDTO.FromUser(user));
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> Update(UserUpdateRequest request)
+        {
+            await _userService.UpdateAsync(request);
+
+            return NoContent();
+        }
+
         [HttpDelete]
         [Route("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)

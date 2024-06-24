@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace Application.Contracts;
+﻿namespace Application.Contracts;
 
 public record UserAddRequest(
     string Username,
