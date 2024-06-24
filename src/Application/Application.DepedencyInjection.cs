@@ -1,3 +1,4 @@
+using Application.Common.JWT;
 using Application.Services;
 
 using Domain.Validators;
@@ -13,6 +14,7 @@ public static class DepedencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services
+            .AddSingleton<IJwtProvider, JwtProvider>()
             .AddServices()
             .AddValidators();
 

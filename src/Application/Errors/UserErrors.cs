@@ -19,8 +19,13 @@ public static class UserErrors
         description: $"A user with the display name '{displayName}' already exists."
     );
 
-    public static Error NotFound(Guid id) => Error.NotFound(
+    public static Error NotFound(string message) => Error.NotFound(
         code: "User.NotFound",
-        description: $"User with id '{id}' not found"
+        description: message
+    );
+
+    public static Error InvalidCredentials => Error.Authentication(
+        code: "User.InvalidCredentials",
+        description: "Invalid email or password"
     );
 }

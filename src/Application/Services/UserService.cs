@@ -1,4 +1,5 @@
-﻿using Application.Contracts;
+﻿using Application.Common.JWT;
+using Application.Contracts;
 using Application.Errors;
 using Application.Errors.Common;
 
@@ -17,11 +18,16 @@ public class UserService : IUserService
     private readonly IUserRepository _repository;
     private readonly IValidator<UserAddRequest> _userAddRequestValidator;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly IJwtProvider _jwtProvider;
 
-    public UserService(IUserRepository repository, IValidator<UserAddRequest> userAddRequestValidator)
+    public UserService(
+        IUserRepository repository, 
+        IValidator<UserAddRequest> userAddRequestValidator,
+        IJwtProvider jwtProvider)
     {
         _repository = repository;
         _userAddRequestValidator = userAddRequestValidator;
+        _jwtProvider = jwtProvider;
         _passwordHasher = new PasswordHasher<User>();
     }
 
@@ -65,10 +71,22 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task<string> Login(UserLoginRequest request)
+    {
+        var user = await _repository.GetByEmailAsync(request.Email) ??
+            throw new CustomException(UserErrors.InvalidCredentials);
+
+        var success = _passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
+
+        return success != PasswordVerificationResult.Success
+            ? throw new CustomException(UserErrors.InvalidCredentials)
+            : _jwtProvider.Generate(user);
+    }
+
     public async Task UpdateAsync(UserUpdateRequest request)
     {
         var user = await _repository.GetByIdAsync(request.Id) ??
-            throw new CustomException(UserErrors.NotFound(request.Id));
+            throw new CustomException(UserErrors.NotFound($"User with id {request.Id} not found"));
 
         if (!user.DisplayName.Equals(request.NewDisplayName))
         {
@@ -88,7 +106,7 @@ public class UserService : IUserService
     public async Task DeleteAsync(Guid id)
     {
         var user = await _repository.GetByIdAsync(id) ??
-            throw new CustomException(UserErrors.NotFound(id));
+            throw new CustomException(UserErrors.NotFound($"User with id {id} not found"));
 
         user.Deleted = true;
 

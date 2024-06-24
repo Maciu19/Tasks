@@ -1,6 +1,7 @@
 ﻿using Application.Contracts;
 using Application.Services;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -16,6 +17,7 @@ namespace API.Controllers
             _userService = userService;
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<ActionResult<UserDTO>> GetById(Guid id)
@@ -69,6 +71,15 @@ namespace API.Controllers
                 actionName: nameof(GetById),
                 routeValues: new { id = user.Id },
                 value: UserDTO.FromUser(user));
+        }
+
+        [HttpPost]
+        [Route("/login")]
+        public async Task<IActionResult> Login(UserLoginRequest request)
+        {
+            string token = await _userService.Login(request);
+
+            return Ok(token);
         }
 
         [HttpPatch]
