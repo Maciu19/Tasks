@@ -8,7 +8,7 @@ namespace API;
 
 public static class DepedencyInjection
 {
-    public static IServiceCollection AddApi(this IServiceCollection services)
+    public static IServiceCollection AddApi(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
@@ -19,7 +19,8 @@ public static class DepedencyInjection
             .AddJwtBearer();
         services.AddAuthorization();
 
-        services.ConfigureOptions<JwtOptionsSetup>();
+        services.Configure<JwtOptions>(
+            configuration.GetSection(JwtOptions.SectionName));  
         services.ConfigureOptions<JwtBearerOptionsSetup>();
 
         services.AddExceptionHandler<CustomExceptionHandler>();

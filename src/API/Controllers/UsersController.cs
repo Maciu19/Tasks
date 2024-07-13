@@ -17,9 +17,9 @@ namespace API.Controllers
             _userService = userService;
         }
 
-        [Authorize]
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize]
         public async Task<ActionResult<UserDTO>> GetById(Guid id)
         {
             var user = await _userService.GetByIdAsync(id);
@@ -31,6 +31,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("email/{email}")]
+        [Authorize]
         public async Task<ActionResult<UserDTO>> GetByEmail(string email)
         {
             var user = await _userService.GetByEmailAsync(email);
@@ -42,6 +43,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("username/{username}")]
+        [Authorize]
         public async Task<ActionResult<UserDTO>> GetByUsername(string username)
         {
             var user = await _userService.GetByUsernameAsync(username);
@@ -53,6 +55,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("displayName/{displayName}")]
+        [Authorize]
         public async Task<ActionResult<UserDTO>> GetByDisplayName(string displayName)
         {
             var user = await _userService.GetByDisplayNameAsync(displayName);
@@ -73,16 +76,8 @@ namespace API.Controllers
                 value: UserDTO.FromUser(user));
         }
 
-        [HttpPost]
-        [Route("/login")]
-        public async Task<IActionResult> Login(UserLoginRequest request)
-        {
-            string token = await _userService.Login(request);
-
-            return Ok(token);
-        }
-
         [HttpPatch]
+        [Authorize]
         public async Task<IActionResult> Update(UserUpdateRequest request)
         {
             await _userService.UpdateAsync(request);
@@ -92,6 +87,7 @@ namespace API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _userService.DeleteAsync(id);

@@ -5,14 +5,13 @@ using Infrastructure.Common.DatabaseProvider;
 using Infrastructure.Migrations;
 using Infrastructure.Repositories;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure;
 
 public static class DepedencyInjection 
 {
-    public static IServiceCollection AddInfrasturcture(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrasturcture(this IServiceCollection services)
     {
         services
             .AddSingleton<IDatabaseProvider, DatabaseProvider>()

@@ -1,6 +1,7 @@
 ﻿namespace Application.Contracts;
 
 public record UserLoginRequest (
-    string Email,
+    string? Email,
+    string? Username,
     string Password
 );

@@ -30,6 +30,7 @@ public static class DepedencyInjection
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<IUserService, UserService>();
 
         return services;

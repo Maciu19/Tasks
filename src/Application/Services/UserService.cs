@@ -18,7 +18,6 @@ public class UserService : IUserService
     private readonly IUserRepository _repository;
     private readonly IValidator<UserAddRequest> _userAddRequestValidator;
     private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly IJwtProvider _jwtProvider;
 
     public UserService(
         IUserRepository repository, 
@@ -27,7 +26,6 @@ public class UserService : IUserService
     {
         _repository = repository;
         _userAddRequestValidator = userAddRequestValidator;
-        _jwtProvider = jwtProvider;
         _passwordHasher = new PasswordHasher<User>();
     }
 
@@ -69,18 +67,6 @@ public class UserService : IUserService
         await _repository.AddAsync(user);
 
         return user;
-    }
-
-    public async Task<string> Login(UserLoginRequest request)
-    {
-        var user = await _repository.GetByEmailAsync(request.Email) ??
-            throw new CustomException(UserErrors.InvalidCredentials);
-
-        var success = _passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
-
-        return success != PasswordVerificationResult.Success
-            ? throw new CustomException(UserErrors.InvalidCredentials)
-            : _jwtProvider.Generate(user);
     }
 
     public async Task UpdateAsync(UserUpdateRequest request)
