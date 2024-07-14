@@ -18,11 +18,25 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(UserLoginRequest request)
+        public async Task<ActionResult<UserLoginResponse>> Login(UserLoginRequest request)
         {
-            string token = await _userService.Login(request);
+            return Ok(await _userService.Login(request));
+        }
 
-            return Ok(token);
+        [HttpPost]
+        [Route("refresh")]
+        public async Task<ActionResult<UserLoginResponse>> Refresh(RefreshRequest request)
+        {
+            return Ok(await _userService.Refresh(request));
+        }
+
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout(UserLogoutRequest request)
+        {
+            await _userService.Logout(request);
+
+            return NoContent();
         }
     }
 }

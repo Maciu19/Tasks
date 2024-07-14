@@ -23,9 +23,4 @@ public static class UserErrors
         code: "User.NotFound",
         description: message
     );
-
-    public static Error InvalidCredentials => Error.Authentication(
-        code: "User.InvalidCredentials",
-        description: "Invalid email or password"
-    );
 }

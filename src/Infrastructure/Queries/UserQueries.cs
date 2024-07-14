@@ -1,10 +1,12 @@
-﻿namespace Infrastructure.Queries;
+﻿using Infrastructure.Common;
+
+namespace Infrastructure.Queries;
 
 public static class UserQueries
 {
-    public const string Select = """
+    public const string Select = $"""
         SELECT id, username, email, password, display_name, deleted
-        FROM public.user
+        FROM {DatabaseConstants.Schema}.{DatabaseConstants.UserTableName}
         WHERE deleted = false
     """;
 
@@ -13,8 +15,8 @@ public static class UserQueries
     public const string SelectByEmail = Select + " AND email = @Email";
     public const string SelectByDisplayName = Select + " AND display_name = @DisplayName";
 
-    public const string Insert = """
-        INSERT INTO public.user
+    public const string Insert = $"""
+        INSERT INTO {DatabaseConstants.Schema}.{DatabaseConstants.UserTableName}
         (
             id, 
             username, 
@@ -34,8 +36,8 @@ public static class UserQueries
         )
         """;
 
-    public const string Update = """
-        UPDATE public.user
+    public const string Update = $"""
+        UPDATE {DatabaseConstants.Schema}.{DatabaseConstants.UserTableName}
         SET 
         	password = @Password, 
         	display_name = @DisplayName,

@@ -4,5 +4,7 @@ namespace Application.Services;
 
 public interface IAuthorizationService
 {
-    Task<string> Login(UserLoginRequest request);
+    Task<UserLoginResponse> Login(UserLoginRequest request);
+    Task<UserLoginResponse> Refresh(RefreshRequest request);
+    Task Logout(UserLogoutRequest request);
 }

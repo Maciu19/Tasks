@@ -21,8 +21,7 @@ public class UserService : IUserService
 
     public UserService(
         IUserRepository repository, 
-        IValidator<UserAddRequest> userAddRequestValidator,
-        IJwtProvider jwtProvider)
+        IValidator<UserAddRequest> userAddRequestValidator)
     {
         _repository = repository;
         _userAddRequestValidator = userAddRequestValidator;

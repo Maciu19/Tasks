@@ -1,4 +1,3 @@
-using Application.Common.JWT;
 using Application.Services;
 
 using Domain.Validators;
@@ -14,7 +13,6 @@ public static class DepedencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services
-            .AddSingleton<IJwtProvider, JwtProvider>()
             .AddServices()
             .AddValidators();
 
@@ -31,6 +29,7 @@ public static class DepedencyInjection
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IAuthorizationService, AuthorizationService>();
+        services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserService, UserService>();
 
         return services;
