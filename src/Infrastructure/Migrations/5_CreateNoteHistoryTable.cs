@@ -19,7 +19,7 @@ public class CreateNoteHistoryTable : Migration
             .WithColumn("id").AsInt32().PrimaryKey()
             .WithColumn("note_id").AsGuid()
             .WithColumn("title").AsString().NotNullable()
-            .WithColumn("text").AsString()
+            .WithColumn("content").AsString()
             .WithColumn("timestamp").AsDateTime();
 
         Create.Index()

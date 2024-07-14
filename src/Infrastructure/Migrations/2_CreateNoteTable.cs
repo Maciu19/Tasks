@@ -17,15 +17,15 @@ public class CreateNoteTable : Migration
         Create.Table(DatabaseConstants.NoteTableName)
             .InSchema(DatabaseConstants.Schema)
             .WithColumn("id").AsGuid().PrimaryKey()
-            .WithColumn("userId").AsGuid()
+            .WithColumn("user_id").AsGuid()
             .WithColumn("title").AsString().NotNullable()
-            .WithColumn("text").AsString()
+            .WithColumn("content").AsString()
             .WithColumn("deleted").AsBoolean()
             .WithColumn("fixed").AsBoolean()
             .WithColumn("due_date").AsDateTime().Nullable();
 
         Create.ForeignKey("FK_note_user")
-            .FromTable(DatabaseConstants.NoteTableName).ForeignColumn("userId")
+            .FromTable(DatabaseConstants.NoteTableName).ForeignColumn("user_id")
             .ToTable(DatabaseConstants.UserTableName).PrimaryColumn("id");
     }
 

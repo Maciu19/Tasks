@@ -2,7 +2,7 @@
 
 namespace Application.Contracts;
 
-public record UserDTO(
+public record UserDto(
     Guid Id,
     string Username,
     string Email,
@@ -10,9 +10,9 @@ public record UserDTO(
     string DisplayName
 )
 {
-    public static UserDTO FromUser(User user)
+    public static UserDto FromUser(User user)
     {
-        return new UserDTO(
+        return new UserDto(
             user.Id,
             user.Username,
             user.Email,

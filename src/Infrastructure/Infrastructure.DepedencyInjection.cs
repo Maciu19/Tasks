@@ -42,6 +42,7 @@ public static class DepedencyInjection
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITokenRepository, TokenRepository>();
+        services.AddScoped<INoteRepository, NoteRepository>();
 
         return services;
     }

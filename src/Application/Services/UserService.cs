@@ -1,5 +1,4 @@
-﻿using Application.Common.JWT;
-using Application.Contracts;
+﻿using Application.Contracts;
 using Application.Errors;
 using Application.Errors.Common;
 
