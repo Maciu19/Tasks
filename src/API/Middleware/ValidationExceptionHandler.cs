@@ -17,8 +17,8 @@ public class ValidationExceptionHandler : IExceptionHandler
     }
 
     public async ValueTask<bool> TryHandleAsync(
-        HttpContext httpContext, 
-        Exception exception, 
+        HttpContext httpContext,
+        Exception exception,
         CancellationToken cancellationToken)
     {
         if (exception is not ValidationException validationException)
@@ -29,10 +29,10 @@ public class ValidationExceptionHandler : IExceptionHandler
         _logger.LogError(exception, "A validation exception occurred: {Message}", exception.Message);
 
         var groupedErrors = validationException.Errors
-            .GroupBy(g => g.PropertyName) 
+            .GroupBy(g => g.PropertyName)
             .ToDictionary(
-                group => group.Key, 
-                group => group.Select(x => x.ErrorMessage).ToArray()); 
+                group => group.Key,
+                group => group.Select(x => x.ErrorMessage).ToArray());
 
         var problemDetails = new ValidationProblemDetails
         {

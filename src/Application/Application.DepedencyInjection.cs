@@ -1,6 +1,8 @@
-using Application.Services;
-
-using Domain.Validators;
+using Application.Access.Services;
+using Application.Access.Services.Abstractions;
+using Application.Access.Validators;
+using Application.Notes.Services;
+using Application.Notes.Services.Abstractions;
 
 using FluentValidation;
 

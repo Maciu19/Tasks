@@ -1,12 +1,15 @@
-﻿using Application.Contracts;
-using Application.Services;
+﻿using Application.Access.Contracts;
+using Application.Notes.Contracts;
+using Application.Notes.Services.Abstractions;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[Authorize]
 public class NotesController : ControllerBase
 {
     private readonly INoteService _noteService;
@@ -24,7 +27,7 @@ public class NotesController : ControllerBase
 
         return note is null
             ? Problem(statusCode: StatusCodes.Status404NotFound, detail: $"Note with id {id} not found")
-            : Ok(NoteDto.FromNote(note));   
+            : Ok(NoteDto.FromNote(note));
     }
 
     [HttpGet]
@@ -42,8 +45,8 @@ public class NotesController : ControllerBase
         var note = await _noteService.CreateAsync(request);
 
         return CreatedAtAction(
-            nameof(GetById), 
-            new { id = note.Id }, 
+            nameof(GetById),
+            new { id = note.Id },
             NoteDto.FromNote(note));
     }
 

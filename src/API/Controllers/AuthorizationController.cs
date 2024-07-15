@@ -1,5 +1,5 @@
-﻿using Application.Contracts;
-using Application.Services;
+﻿using Application.Access.Contracts;
+using Application.Access.Services.Abstractions;
 
 using Microsoft.AspNetCore.Mvc;
 

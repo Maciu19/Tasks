@@ -1,9 +1,12 @@
 using FluentMigrator.Runner;
 
+using Infrastructure.Access.Repositories;
+using Infrastructure.Access.Repositories.Abstractions;
 using Infrastructure.Common.DatabaseProvider;
 
 using Infrastructure.Migrations;
-using Infrastructure.Repositories;
+using Infrastructure.Notes.Repositories;
+using Infrastructure.Notes.Repositories.Abstractions;
 
 using Microsoft.Extensions.DependencyInjection;
 
