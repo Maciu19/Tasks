@@ -33,11 +33,11 @@ public class NoteService : INoteService
         _updateNoteRequestValidator = updateNoteRequestValidator;
     }
 
-    public async Task<Note?> GetByIdAsync(Guid id)
-        => await _noteRepository.GetByIdAsync(id);
+    public Task<Note?> GetByIdAsync(Guid id)
+        => _noteRepository.GetByIdAsync(id);
 
-    public async Task<IEnumerable<Note>> GetByUserIdAsync(Guid userId)
-        => await _noteRepository.GetByUserIdAsync(userId);
+    public Task<IEnumerable<Note>> GetByUserIdAsync(Guid userId)
+        => _noteRepository.GetByUserIdAsync(userId);
 
     public async Task<Note> CreateAsync(CreateNoteRequest request)
     {

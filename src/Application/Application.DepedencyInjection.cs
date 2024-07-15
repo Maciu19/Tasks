@@ -34,6 +34,7 @@ public static class DepedencyInjection
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<INoteService, NoteService>();
+        services.AddScoped<ILabelService, LabelService>();
 
         return services;
     }

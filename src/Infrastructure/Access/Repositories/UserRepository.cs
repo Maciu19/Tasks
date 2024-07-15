@@ -19,23 +19,23 @@ public class UserRepository : IUserRepository
         _connection = new NpgsqlConnection(databaseProvider.GetDefaultConnectionString());
     }
 
-    public async Task<User?> GetByEmailAsync(string email)
-        => await _connection.QueryFirstOrDefaultAsync<User>(UserQueries.SelectByEmail, new { Email = email });
+    public Task<User?> GetByEmailAsync(string email)
+        => _connection.QueryFirstOrDefaultAsync<User>(UserQueries.SelectByEmail, new { Email = email });
 
-    public async Task<User?> GetByIdAsync(Guid id)
-        => await _connection.QueryFirstOrDefaultAsync<User>(UserQueries.SelectById, new { Id = id });
+    public Task<User?> GetByIdAsync(Guid id)
+        => _connection.QueryFirstOrDefaultAsync<User>(UserQueries.SelectById, new { Id = id });
 
-    public async Task<User?> GetByUsernameAsync(string username)
-        => await _connection.QueryFirstOrDefaultAsync<User>(UserQueries.SelectByUsername, new { Username = username });
+    public Task<User?> GetByUsernameAsync(string username)
+        => _connection.QueryFirstOrDefaultAsync<User>(UserQueries.SelectByUsername, new { Username = username });
 
-    public async Task<User?> GetByDisplayNameAsync(string displayName)
-        => await _connection.QueryFirstOrDefaultAsync<User>(UserQueries.SelectByDisplayName, new { DisplayName = displayName });
+    public Task<User?> GetByDisplayNameAsync(string displayName)
+        => _connection.QueryFirstOrDefaultAsync<User>(UserQueries.SelectByDisplayName, new { DisplayName = displayName });
 
-    public async Task<int> AddAsync(User user)
-        => await _connection.ExecuteAsync(UserQueries.Insert, user);
+    public Task<int> AddAsync(User user)
+        => _connection.ExecuteAsync(UserQueries.Insert, user);
 
-    public async Task<int> UpdateAsync(User user)
-        => await _connection.ExecuteAsync(UserQueries.Update, user);
+    public Task<int> UpdateAsync(User user)
+        => _connection.ExecuteAsync(UserQueries.Update, user);
 
     public async Task<int> DeleteAsync(User user)
     {

@@ -18,15 +18,15 @@ public class NoteRepository : INoteRepository
     {
         _connection = new NpgsqlConnection(databaseProvider.GetDefaultConnectionString());
     }
-    public async Task<IEnumerable<Note>> GetByUserIdAsync(Guid userId)
-        => await _connection.QueryAsync<Note>(NoteQueries.SelectByUserId, new { UserId = userId });
+    public Task<IEnumerable<Note>> GetByUserIdAsync(Guid userId)
+        => _connection.QueryAsync<Note>(NoteQueries.SelectByUserId, new { UserId = userId });
 
-    public async Task<Note?> GetByIdAsync(Guid id)
-        => await _connection.QueryFirstOrDefaultAsync<Note>(NoteQueries.SelectById, new { Id = id });
+    public Task<Note?> GetByIdAsync(Guid id)
+        => _connection.QueryFirstOrDefaultAsync<Note>(NoteQueries.SelectById, new { Id = id });
 
-    public async Task<int> CreateAsync(Note note)
-        => await _connection.ExecuteAsync(NoteQueries.Insert, note);
+    public Task<int> CreateAsync(Note note)
+        => _connection.ExecuteAsync(NoteQueries.Insert, note);
 
-    public async Task<int> UpdateAsync(Note note)
-        => await _connection.ExecuteAsync(NoteQueries.Update, note);
+    public Task<int> UpdateAsync(Note note)
+        => _connection.ExecuteAsync(NoteQueries.Update, note);
 }

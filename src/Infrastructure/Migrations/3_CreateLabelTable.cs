@@ -16,13 +16,20 @@ public class CreateLabelTable : Migration
 
         Create.Table(DatabaseConstants.LabelTableName)
            .InSchema(DatabaseConstants.Schema)
-           .WithColumn("id").AsInt32().PrimaryKey()
-           .WithColumn("userId").AsGuid()
-           .WithColumn("name").AsString().Unique();
+           .WithColumn("id").AsInt32().Identity().PrimaryKey()
+           .WithColumn("user_id").AsGuid()
+           .WithColumn("name").AsString();
 
         Create.ForeignKey("FK_label_user")
-            .FromTable(DatabaseConstants.NoteTableName).ForeignColumn("userId")
+            .FromTable(DatabaseConstants.NoteTableName).ForeignColumn("user_id")
             .ToTable(DatabaseConstants.UserTableName).PrimaryColumn("id");
+
+        Create.Index("IX_label_name_user_id")
+            .OnTable(DatabaseConstants.LabelTableName)
+            .InSchema(DatabaseConstants.Schema)
+            .OnColumn("name").Ascending()
+            .OnColumn("user_id").Ascending()
+            .WithOptions().Unique();
     }
 
     public override void Down()

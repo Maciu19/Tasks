@@ -28,17 +28,17 @@ public class UserService : IUserService
         _passwordHasher = new PasswordHasher<User>();
     }
 
-    public async Task<User?> GetByEmailAsync(string email)
-        => await _repository.GetByEmailAsync(email);
+    public Task<User?> GetByEmailAsync(string email)
+        => _repository.GetByEmailAsync(email);
 
-    public async Task<User?> GetByIdAsync(Guid id)
-        => await _repository.GetByIdAsync(id);
+    public Task<User?> GetByIdAsync(Guid id)
+        => _repository.GetByIdAsync(id);
 
-    public async Task<User?> GetByUsernameAsync(string username)
-        => await _repository.GetByUsernameAsync(username);
+    public Task<User?> GetByUsernameAsync(string username)
+        => _repository.GetByUsernameAsync(username);
 
-    public async Task<User?> GetByDisplayNameAsync(string displayName)
-        => await _repository.GetByDisplayNameAsync(displayName);
+    public Task<User?> GetByDisplayNameAsync(string displayName)
+        => _repository.GetByDisplayNameAsync(displayName);
 
     public async Task<User> CreateAsync(UserAddRequest request)
     {
