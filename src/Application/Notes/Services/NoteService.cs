@@ -18,17 +18,20 @@ public class NoteService : INoteService
 {
     private readonly INoteRepository _noteRepository;
     private readonly IUserRepository _userRepository;
+    private readonly ILabelRepository _labelRepository;
     private readonly IValidator<CreateNoteRequest> _createNoteRequestValidator;
     private readonly IValidator<UpdateNoteRequest> _updateNoteRequestValidator;
 
     public NoteService(
         INoteRepository noteRepository,
         IUserRepository userRepository,
+        ILabelRepository labelRepository,
         IValidator<CreateNoteRequest> createNoteRequestValidator,
         IValidator<UpdateNoteRequest> updateNoteRequestValidator)
     {
         _noteRepository = noteRepository;
         _userRepository = userRepository;
+        _labelRepository = labelRepository;
         _createNoteRequestValidator = createNoteRequestValidator;
         _updateNoteRequestValidator = updateNoteRequestValidator;
     }
@@ -43,14 +46,17 @@ public class NoteService : INoteService
     {
         await _createNoteRequestValidator.ValidateAndThrowAsync(request);
 
-        if (_userRepository.GetByIdAsync(request.UserId) is null)
+        if (await _userRepository.GetByIdAsync(request.UserId) is null)
             throw new CustomException(UserErrors.NotFound($"User with id {request.UserId} not found"));
 
         Note note = new(
-            request.UserId,
-            request.Title,
-            request.Content,
-            request.DueDate?.ToUniversalTime());
+            userId: request.UserId,
+            title: request.Title,
+            content: request.Content,
+            lastEdited: DateTime.UtcNow,
+            fix: request.Fixed,
+            background: request.Background,
+            dueDate: request.DueDate?.ToUniversalTime());
 
         await _noteRepository.CreateAsync(note);
 
@@ -65,12 +71,48 @@ public class NoteService : INoteService
             throw new CustomException(NoteErrors.NotFound($"Note with id {request.Id} not found"));
 
         note.Update(
-            request.Title,
-            request.Content,
-            request.Fixed,
-            request.DueDate?.ToUniversalTime());
+            title: request.Title,
+            content: request.Content,
+            lastEdited: DateTime.UtcNow,
+            fix: request.Fixed,
+            background: request.Background,
+            dueDate: request.DueDate?.ToUniversalTime());
 
         await _noteRepository.UpdateAsync(note);
+    }
+
+    public async Task UpdateCollaboratorsAsync(UpdateCollboratorsRequest request)
+    {
+        var note = await _noteRepository.GetByIdAsync(request.NoteId) ??
+            throw new CustomException(NoteErrors.NotFound($"Note with id {request.NoteId} not found"));
+
+        if (request.CollaboratorsIds.Contains(note.UserId))
+            throw new CustomException(NoteErrors.OwnerOfTheNoteCannotBeCollaborator);
+
+        foreach (var collaboratorId in request.CollaboratorsIds)
+        {
+            if (await _userRepository.GetByIdAsync(collaboratorId) is null)
+                throw new CustomException(UserErrors.NotFound($"User with id {collaboratorId} not found"));
+        }
+
+        await _noteRepository.UpdateCollaboratorsAsync(note, request.CollaboratorsIds);
+    }
+
+    public async Task UpdateLabelsAsync(UpdateNoteLabelsRequest request)
+    {
+        var note = await _noteRepository.GetByIdAsync(request.NoteId) ??
+            throw new CustomException(NoteErrors.NotFound($"Note with id {request.NoteId} not found"));
+
+        foreach (var labelId in request.LabelsIds)
+        {
+            var label = await _labelRepository.GetByIdAsync(labelId)
+                ?? throw new CustomException(LabelErrors.NotFound($"Label with id {labelId} not found"));
+
+            if (label.UserId != note.UserId)
+                throw new CustomException(LabelErrors.LabelDoesNotBelongToUser(note.UserId));
+        }
+
+        await _noteRepository.UpdateLabelsAsync(note, request.LabelsIds);
     }
 
     public async Task DeleteAsync(Guid id)

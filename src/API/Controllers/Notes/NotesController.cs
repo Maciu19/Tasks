@@ -1,16 +1,16 @@
-﻿using Application.Access.Contracts;
+﻿using API.Controllers.Common;
+
+using Application.Access.Contracts;
 using Application.Notes.Contracts;
 using Application.Notes.Services.Abstractions;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
+namespace API.Controllers.Notes;
 
-[Route("[controller]")]
-[ApiController]
 [Authorize]
-public class NotesController : ControllerBase
+public class NotesController : ApiController
 {
     private readonly INoteService _noteService;
 
@@ -54,6 +54,24 @@ public class NotesController : ControllerBase
     public async Task<IActionResult> Update(UpdateNoteRequest request)
     {
         await _noteService.UpdateAsync(request);
+
+        return NoContent();
+    }
+
+    [HttpPut]
+    [Route("collaborators")]
+    public async Task<IActionResult> UpdateCollaborators(UpdateCollboratorsRequest request)
+    {
+        await _noteService.UpdateCollaboratorsAsync(request);
+
+        return NoContent();
+    }
+
+    [HttpPut]
+    [Route("labels")]
+    public async Task<IActionResult> UpdateLabels(UpdateNoteLabelsRequest request)
+    {
+        await _noteService.UpdateLabelsAsync(request);
 
         return NoContent();
     }

@@ -5,4 +5,5 @@ public record UpdateNoteRequest(
     string Title,
     string Content,
     bool Fixed,
+    string? Background, 
     DateTime? DueDate);

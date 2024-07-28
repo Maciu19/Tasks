@@ -8,4 +8,9 @@ public static class NoteErrors
         code: "Note.NotFound",
         description: message
     );
+
+    public static Error OwnerOfTheNoteCannotBeCollaborator => Error.Validation(
+        code: "Note.OwnerOfTheNoteCannotBeCollaborator",
+        description: "Owner of the note cannot be a collaborator"
+    );
 }

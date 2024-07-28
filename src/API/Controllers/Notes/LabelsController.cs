@@ -1,4 +1,6 @@
-﻿using Application.Notes.Contracts;
+﻿using API.Controllers.Common;
+
+using Application.Notes.Contracts;
 using Application.Notes.Services.Abstractions;
 
 using Domain.Notes;
@@ -6,12 +8,10 @@ using Domain.Notes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
+namespace API.Controllers.Notes;
 
-[Route("[controller]")]
-[ApiController]
 [Authorize]
-public class LabelsController : ControllerBase
+public class LabelsController : ApiController
 {
     private readonly ILabelService _labelService;
 

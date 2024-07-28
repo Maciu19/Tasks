@@ -13,4 +13,9 @@ public class LabelErrors
         code: "Label.AlreadyExists",
         description: message
     );
+
+    public static Error LabelDoesNotBelongToUser(Guid userId) => Error.Forbidden(
+        code: "Label.DoesNotBelongToUser",
+        description: $"Label does not belong to user with id {userId}"
+    );
 }

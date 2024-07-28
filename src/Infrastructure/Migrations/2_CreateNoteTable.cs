@@ -20,9 +20,11 @@ public class CreateNoteTable : Migration
             .WithColumn("user_id").AsGuid()
             .WithColumn("title").AsString().NotNullable()
             .WithColumn("content").AsString()
-            .WithColumn("deleted").AsBoolean()
+            .WithColumn("last_edited").AsDateTime()
+            .WithColumn("due_date").AsDateTime().Nullable()
             .WithColumn("fixed").AsBoolean()
-            .WithColumn("due_date").AsDateTime().Nullable();
+            .WithColumn("background").AsString().Nullable()
+            .WithColumn("deleted").AsBoolean();
 
         Create.ForeignKey("FK_note_user")
             .FromTable(DatabaseConstants.NoteTableName).ForeignColumn("user_id")

@@ -6,6 +6,7 @@ public enum ErrorType
 {
     Failure,
     Validation,
+    Forbidden,
     NotFound,
     Conflict,
     Authentication,
@@ -20,6 +21,7 @@ public static class ErrorTypeToHttpStatusMapper
         {
             ErrorType.Failure => (int)HttpStatusCode.InternalServerError,
             ErrorType.Validation => (int)HttpStatusCode.BadRequest,
+            ErrorType.Forbidden => (int)HttpStatusCode.Forbidden,
             ErrorType.NotFound => (int)HttpStatusCode.NotFound,
             ErrorType.Conflict => (int)HttpStatusCode.Conflict,
             ErrorType.Authentication => (int)HttpStatusCode.Unauthorized,

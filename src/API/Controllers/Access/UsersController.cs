@@ -1,14 +1,14 @@
-﻿using Application.Access.Contracts;
+﻿using API.Controllers.Common;
+
+using Application.Access.Contracts;
 using Application.Access.Services.Abstractions;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
+namespace API.Controllers.Access;
 
-[Route("[controller]")]
-[ApiController]
-public class UsersController : ControllerBase
+public class UsersController : ApiController
 {
     private readonly IUserService _userService;
 

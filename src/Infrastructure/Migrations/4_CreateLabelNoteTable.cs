@@ -17,7 +17,8 @@ public class CreateLabelNoteTable : Migration
         Create.Table(DatabaseConstants.LabelNoteTableName)
             .InSchema(DatabaseConstants.Schema)
             .WithColumn("label_id").AsInt32()
-            .WithColumn("note_id").AsGuid();
+            .WithColumn("note_id").AsGuid()
+            .WithColumn("fixed").AsBoolean();
 
         Create.PrimaryKey("PK_label_note")
             .OnTable(DatabaseConstants.LabelNoteTableName)
