@@ -9,5 +9,6 @@ public interface ILabelService
     Task<Label?> GetByNameAsync(Guid userId, string name);
     Task<Label> CreateAsync(Guid userId, string name);
     Task UpdateAsync(int id, string newName);
+    Task UpdateFixedAsync(Guid noteId, int labelId);
     Task DeleteAsync(int id);
 }

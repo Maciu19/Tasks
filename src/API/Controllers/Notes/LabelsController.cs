@@ -68,6 +68,15 @@ public class LabelsController : ApiController
         return NoContent();
     }
 
+    [HttpPatch]
+    [Route("updateFixed")]  
+    public async Task<IActionResult> UpdateFixed(UpdateFixedRequest request)
+    {
+        await _labelService.UpdateFixedAsync(request.NoteId, request.LabelId);
+
+        return NoContent();
+    }
+
     [HttpDelete]
     [Route("id/{id:int}")]
     public async Task<IActionResult> Delete(int id)

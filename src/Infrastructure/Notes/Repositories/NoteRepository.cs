@@ -19,8 +19,9 @@ public class NoteRepository : INoteRepository
         _connection = new NpgsqlConnection(databaseProvider.GetDefaultConnectionString());
     }
 
-    private Task<IEnumerable<Note>> GetAsync(string sql, object param)
-        => _connection.QueryAsync<Note, Guid?, int?, Note>(
+    private async Task<IEnumerable<Note>> GetAsync(string sql, object param)
+    {
+        var notes = await _connection.QueryAsync<Note, Guid?, int?, Note>(
             sql: sql,
             (note, collaboratorId, labelId) =>
             {
@@ -30,7 +31,7 @@ public class NoteRepository : INoteRepository
                 }
                 if (labelId is not null)
                 {
-                    note.LabelsIds.Add((int) labelId);
+                    note.LabelsIds.Add((int)labelId);
                 }
 
                 return note;
@@ -38,6 +39,20 @@ public class NoteRepository : INoteRepository
             splitOn: "collaborator, labelId",
             param: param);
 
+        var result = notes
+            .GroupBy(n => n.Id)
+            .Select(g =>
+            {
+                var groupedNote = g.First();
+                groupedNote.CollaboratorsIds = g.SelectMany(n => n.CollaboratorsIds).Distinct().ToList();
+                groupedNote.LabelsIds = g.SelectMany(n => n.LabelsIds).Distinct().ToList();
+
+                return groupedNote;
+            });
+
+        return result;
+    }
+        
     public Task<IEnumerable<Note>> GetByUserIdAsync(Guid userId)
         => GetAsync(NoteQueries.SelectByUserId, new { UserId = userId });
 

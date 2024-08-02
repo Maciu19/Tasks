@@ -19,6 +19,14 @@ public class NoteLabelQueries
         )
     """;
 
+    public const string UpdateFixed = $"""
+        UPDATE {DatabaseConstants.Schema}.{DatabaseConstants.LabelNoteTableName}
+        SET
+            fixed = @Fix
+        WHERE
+            note_id = @NoteId AND label_id = @LabelId
+    """;
+
     public const string DeleteByNoteId = $"""
         DELETE FROM {DatabaseConstants.Schema}.{DatabaseConstants.LabelNoteTableName}
         WHERE note_id = @NoteId

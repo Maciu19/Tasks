@@ -13,4 +13,9 @@ public static class NoteErrors
         code: "Note.OwnerOfTheNoteCannotBeCollaborator",
         description: "Owner of the note cannot be a collaborator"
     );
+
+    public static Error NoteDoesntContainLabel(Guid noteId, int labelId) => Error.NotFound(
+        code: "Note.DoesntContainLabel",
+        description: $"Note doesn't contain label with id {labelId}"
+    );  
 }

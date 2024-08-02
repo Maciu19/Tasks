@@ -14,13 +14,16 @@ public class LabelService : ILabelService
 {
     private readonly ILabelRepository _labelRepository;
     private readonly IUserService _userService;
+    private readonly INoteService _noteService;
 
     public LabelService(
         ILabelRepository labelRepository,
-        IUserService userService)
+        IUserService userService,
+        INoteService noteService)
     {
         _labelRepository = labelRepository;
         _userService = userService;
+        _noteService = noteService;
     }
 
     public Task<IEnumerable<Label>> GetByUserIdAsync(Guid userId)
@@ -46,7 +49,6 @@ public class LabelService : ILabelService
 
         return label;
     }
-
     public async Task UpdateAsync(int id, string newName)
     {
         var label = await _labelRepository.GetByIdAsync(id) ??
@@ -56,6 +58,30 @@ public class LabelService : ILabelService
             throw new CustomException(LabelErrors.AlreadyExists($"Already exists a label with name {newName}"));
 
         await _labelRepository.UpdateAsync(id, newName);
+    }
+
+    public async Task UpdateFixedAsync(Guid noteId, int labelId)
+    {
+        var label = await _labelRepository.GetByIdAsync(labelId) ??
+           throw new CustomException(LabelErrors.NotFound($"Label with id {labelId} not found"));
+
+        var note = await _noteService.GetByIdAsync(noteId) ??
+           throw new CustomException(NoteErrors.NotFound($"Note with id {noteId} not found"));
+
+        if (note.UserId != label.UserId)
+            throw new CustomException(LabelErrors.LabelDoesNotBelongToUser(note.UserId));
+
+        if (!note.LabelsIds.Contains(labelId))
+            throw new CustomException(NoteErrors.NoteDoesntContainLabel(noteId, labelId));
+
+        if (label.NoteIds.TryGetValue(noteId, out bool isNoteFixed))
+        {
+            await _labelRepository.UpdateFixedAsync(noteId, labelId, !isNoteFixed);
+        }
+        else
+        {
+            throw new CustomException(NoteErrors.NoteDoesntContainLabel(noteId, labelId));
+        }
     }
 
     public async Task DeleteAsync(int id)
