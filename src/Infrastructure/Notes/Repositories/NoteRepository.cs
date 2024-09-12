@@ -1,4 +1,6 @@
-﻿using Dapper;
+﻿using System.Data;
+
+using Dapper;
 
 using Domain.Notes;
 
@@ -14,7 +16,8 @@ public class NoteRepository : INoteRepository
 {
     private readonly NpgsqlConnection _connection;
 
-    public NoteRepository(IDatabaseProvider databaseProvider)
+    public NoteRepository(
+        IDatabaseProvider databaseProvider)
     {
         _connection = new NpgsqlConnection(databaseProvider.GetDefaultConnectionString());
     }
@@ -52,18 +55,64 @@ public class NoteRepository : INoteRepository
 
         return result;
     }
-        
+
     public Task<IEnumerable<Note>> GetByUserIdAsync(Guid userId)
         => GetAsync(NoteQueries.SelectByUserId, new { UserId = userId });
 
     public async Task<Note?> GetByIdAsync(Guid id)
         => (await GetAsync(NoteQueries.SelectById, new { Id = id })).FirstOrDefault();
 
-    public Task<int> CreateAsync(Note note)
-        => _connection.ExecuteAsync(NoteQueries.Insert, note);
+    public Task<IEnumerable<NoteHistory>> GetNoteHistoryById(Guid noteId)
+        => _connection.QueryAsync<NoteHistory>(NoteHistoryQueries.SelectByNoteId, new { NoteId = noteId });
 
-    public Task<int> UpdateAsync(Note note)
-        => _connection.ExecuteAsync(NoteQueries.Update, note);
+    private async Task InsertNoteHistory(NoteHistory noteHistory, NpgsqlTransaction transaction)
+    {
+        int affectedRows = await _connection.ExecuteAsync(NoteHistoryQueries.Insert, noteHistory, transaction);
+
+        if (affectedRows == 0)
+        {
+            await transaction.RollbackAsync();
+            throw new Exception("Failed to create note history");
+        }
+    }
+
+    public async Task CreateAsync(Note note)
+    {
+        await _connection.OpenAsync();
+
+        using var transaction = await _connection.BeginTransactionAsync();
+
+        int affectedRows = await _connection.ExecuteAsync(NoteQueries.Insert, note, transaction);
+
+        if (affectedRows == 0)
+        {
+            await transaction.RollbackAsync();
+            throw new Exception("Failed to create note");
+        }
+
+        await InsertNoteHistory(new NoteHistory(note), transaction);
+
+        await transaction.CommitAsync();
+    }
+
+    public async Task UpdateAsync(Note note)
+    {
+        await _connection.OpenAsync();
+
+        using var transaction = await _connection.BeginTransactionAsync();
+
+        int affectedRows = await _connection.ExecuteAsync(NoteQueries.Update, note, transaction);
+
+        if (affectedRows == 0)
+        {
+            await transaction.RollbackAsync();
+            throw new Exception("Failed to update note");
+        }
+
+        await InsertNoteHistory(new NoteHistory(note), transaction);
+
+        await transaction.CommitAsync();
+    }
 
     public async Task UpdateCollaboratorsAsync(Note note, IEnumerable<Guid> collaboratorsIds)
     {
@@ -71,13 +120,19 @@ public class NoteRepository : INoteRepository
 
         using var transaction = await _connection.BeginTransactionAsync();
 
-        await _connection.ExecuteAsync(NoteCollaboratorQueries.DeleteByNoteId, new { NoteId = note.Id });
+        await _connection.ExecuteAsync(
+            NoteCollaboratorQueries.DeleteByNoteId,
+            new { NoteId = note.Id },
+            transaction);
 
         int affectedRows = 0;
 
-        foreach(var collaboratorId in collaboratorsIds)
+        foreach (var collaboratorId in collaboratorsIds)
         {
-            affectedRows += await _connection.ExecuteAsync(NoteCollaboratorQueries.Insert, new { NoteId = note.Id, CollaboratorId = collaboratorId });
+            affectedRows += await _connection.ExecuteAsync(
+                NoteCollaboratorQueries.Insert,
+                new { NoteId = note.Id, CollaboratorId = collaboratorId },
+                transaction);
         }
 
         if (affectedRows != collaboratorsIds.Count())
@@ -95,13 +150,19 @@ public class NoteRepository : INoteRepository
 
         using var transaction = await _connection.BeginTransactionAsync();
 
-        await _connection.ExecuteAsync(NoteLabelQueries.DeleteByNoteId, new { NoteId = note.Id });
+        await _connection.ExecuteAsync(
+            NoteLabelQueries.DeleteByNoteId,
+            new { NoteId = note.Id },
+            transaction);
 
         int affectedRows = 0;
 
-        foreach(var labelId in labelsIds)
-        { 
-            affectedRows += await _connection.ExecuteAsync(NoteLabelQueries.Insert, new { NoteId = note.Id, LabelId = labelId, Fixed = false });
+        foreach (var labelId in labelsIds)
+        {
+            affectedRows += await _connection.ExecuteAsync(
+                NoteLabelQueries.Insert,
+                new { NoteId = note.Id, LabelId = labelId, Fixed = false },
+                transaction);
         }
 
         if (affectedRows != labelsIds.Count())

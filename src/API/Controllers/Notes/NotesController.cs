@@ -4,6 +4,8 @@ using Application.Access.Contracts;
 using Application.Notes.Contracts;
 using Application.Notes.Services.Abstractions;
 
+using Domain.Notes;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,6 +39,15 @@ public class NotesController : ApiController
         var notes = await _noteService.GetByUserIdAsync(userId);
 
         return Ok(notes.Select(NoteDto.FromNote));
+    }
+
+    [HttpGet]
+    [Route("history/{noteId:Guid}")]
+    public async Task<ActionResult<IEnumerable<NoteHistory>>> GetNoteHistory(Guid noteId)
+    {
+        var noteHistory = await _noteService.GetNoteHistoryAsync(noteId);
+
+        return Ok(noteHistory);
     }
 
     [HttpPost]

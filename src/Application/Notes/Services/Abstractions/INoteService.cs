@@ -9,6 +9,7 @@ public interface INoteService
 {
     Task<IEnumerable<Note>> GetByUserIdAsync(Guid userId);
     Task<Note?> GetByIdAsync(Guid id);
+    Task<IEnumerable<NoteHistory>> GetNoteHistoryAsync(Guid noteId);
     Task<Note> CreateAsync(CreateNoteRequest request);
     Task UpdateAsync(UpdateNoteRequest request);
     Task UpdateCollaboratorsAsync(UpdateCollboratorsRequest request);

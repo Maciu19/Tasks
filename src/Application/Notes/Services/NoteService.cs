@@ -42,6 +42,9 @@ public class NoteService : INoteService
     public Task<IEnumerable<Note>> GetByUserIdAsync(Guid userId)
         => _noteRepository.GetByUserIdAsync(userId);
 
+    public async Task<IEnumerable<NoteHistory>> GetNoteHistoryAsync(Guid noteId)
+        => (await _noteRepository.GetNoteHistoryById(noteId)).OrderByDescending(x => x.Timestamp);
+
     public async Task<Note> CreateAsync(CreateNoteRequest request)
     {
         await _createNoteRequestValidator.ValidateAndThrowAsync(request);

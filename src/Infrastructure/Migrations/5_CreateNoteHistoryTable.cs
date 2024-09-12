@@ -16,7 +16,7 @@ public class CreateNoteHistoryTable : Migration
 
         Create.Table(DatabaseConstants.NoteHistoryTableName)
             .InSchema(DatabaseConstants.Schema)
-            .WithColumn("id").AsInt32().PrimaryKey()
+            .WithColumn("id").AsInt32().PrimaryKey().Identity()
             .WithColumn("note_id").AsGuid()
             .WithColumn("title").AsString().NotNullable()
             .WithColumn("content").AsString()
