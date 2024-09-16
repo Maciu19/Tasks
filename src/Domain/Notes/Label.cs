@@ -18,7 +18,7 @@ public class Label
             _id = value;
         }
     }
-    public Guid UserId { get; set; }
+    public Guid UserId { get; }
     public string Name { get; set; } = string.Empty;
 
     private readonly Dictionary<Guid, bool> _noteIds = [];

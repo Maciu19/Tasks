@@ -4,9 +4,9 @@ namespace Domain.Access;
 
 public class User
 {
-    public Guid Id { get; set; }
-    public string Username { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public Guid Id { get; }
+    public string Username { get; } = string.Empty;
+    public string Email { get; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
     public bool Deleted { get; set; }

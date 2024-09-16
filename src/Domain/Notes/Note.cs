@@ -4,16 +4,16 @@ namespace Domain.Notes;
 
 public class Note
 {
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
+    public Guid Id { get; }
+    public Guid UserId { get; }
     public List<Guid> CollaboratorsIds { get; set; } = [];
     public List<int> LabelsIds { get; set; } = [];
-    public string Title { get; set; } = string.Empty;
-    public string Content { get; set; } = string.Empty;
-    public DateTime LastEdited { get; set; }
-    public DateTime? DueDate { get; set; }
-    public bool Fixed { get; set; }
-    public string? Background { get; set; }
+    public string Title { get; private set; } = string.Empty;
+    public string Content { get; private set; } = string.Empty;
+    public DateTime LastEdited { get; private set; }
+    public DateTime? DueDate { get; private set; }
+    public bool Fixed { get; private set; }
+    public string? Background { get; private set; }
     public bool Deleted { get; set; }
 
     public Note(
